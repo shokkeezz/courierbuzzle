@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Очереди</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Очереди</h1>
+
+  <input type="text" id="cardNameInput" placeholder="Введите имя карточки">
+  <button id="createCardBtn">Новый курьер</button>
+
+  <div class="queues">
+    <div class="queue" id="queue1">
+      <h2>В очереди</h2>
+      <div class="cards" id="cardsQueue1"></div>
+    </div>
+    <div class="queue" id="queue2">
+      <h2>В пути</h2>
+      <div class="cards" id="cardsQueue2"></div>
+    </div>
+  </div>
+
+  <!-- Контекстное меню -->
+  <div id="cardMenu" class="card-menu" style="display:none;">
+    <div id="swapQueue">Сменить очередь</div>
+    <div id="moveToTop">На первое место</div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
