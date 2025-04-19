@@ -1,31 +1,37 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Очереди</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Очереди</h1>
-
-  <input type="text" id="cardNameInput" placeholder="Введите имя карточки">
-  <button id="createCardBtn">Новый курьер</button>
+  <div class="controls">
+    <input type="text" id="cardName" placeholder="Введите имя" />
+    <button onclick="createCard()">Добавить курьера</button>
+  </div>
 
   <div class="queues">
     <div class="queue" id="queue1">
       <h2>В очереди</h2>
-      <div class="cards" id="cardsQueue1"></div>
     </div>
     <div class="queue" id="queue2">
       <h2>В пути</h2>
-      <div class="cards" id="cardsQueue2"></div>
     </div>
   </div>
 
-  <!-- Контекстное меню -->
-  <div id="cardMenu" class="card-menu" style="display:none;">
+  <div id="cardMenu" class="card-menu" style="display: none;">
     <div id="swapQueue">Сменить очередь</div>
     <div id="moveToTop">На первое место</div>
+    <div id="closeShift">Закрыть смену</div>
+  </div>
+
+  <div id="confirmDelete" class="card-menu" style="display: none;">
+    <div>Удалить карточку?</div>
+    <div>
+      <button id="confirmYes">Да</button>
+      <button id="confirmNo">Нет</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
