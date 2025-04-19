@@ -1,109 +1,112 @@
-const queue1 = document.getElementById("cardsQueue1");
-const queue2 = document.getElementById("cardsQueue2");
-const createBtn = document.getElementById("createCardBtn");
-const cardNameInput = document.getElementById("cardNameInput");
+const queue1 = document.getElementById("queue1");
+const queue2 = document.getElementById("queue2");
 const cardMenu = document.getElementById("cardMenu");
+const confirmDelete = document.getElementById("confirmDelete");
 const swapQueueBtn = document.getElementById("swapQueue");
 const moveToTopBtn = document.getElementById("moveToTop");
+const closeShiftBtn = document.getElementById("closeShift");
+const confirmYes = document.getElementById("confirmYes");
+const confirmNo = document.getElementById("confirmNo");
 
 let currentCard = null;
+let menuX = 0;
+let menuY = 0;
 
-createBtn.addEventListener("click", () => {
-  const name = cardNameInput.value.trim();
-  if (name === "") {
-    alert("Введите имя карточки!");
-    return;
+function getRandomColor() {
+  const colors = [
+    "#ff6b6b", "#6bc1ff", "#ffa26b", "#b06bff",
+    "#8ea6b4", "#bfa0dc", "#a0c1b8",
+    "#d3a588", "#b0bec5", "#a3a3d1"
+  ];
+  if (!getRandomColor.used) getRandomColor.used = new Set();
+
+  if (getRandomColor.used.size >= colors.length) {
+    getRandomColor.used.clear();
   }
+
+  let color;
+  do {
+    color = colors[Math.floor(Math.random() * colors.length)];
+  } while (getRandomColor.used.has(color));
+
+  getRandomColor.used.add(color);
+  return color;
+}
+
+function createCard() {
+  const name = document.getElementById("cardName").value.trim();
+  if (!name) return;
 
   const card = document.createElement("div");
   card.className = "card";
-  card.textContent = name;
   card.style.backgroundColor = getRandomColor();
+  card.textContent = name;
 
-  card.addEventListener("click", (e) => showCardMenu(e, card));
+  card.addEventListener("click", (e) => {
+    showCardMenu(e, card);
+  });
+
   queue1.appendChild(card);
+  document.getElementById("cardName").value = "";
+}
 
-  cardNameInput.value = "";
-});
-
-// Показ контекстного меню
 function showCardMenu(event, card) {
   event.preventDefault();
   currentCard = card;
+  menuX = event.pageX;
+  menuY = event.pageY;
 
-  // Позиционирование меню
-  cardMenu.style.left = `${event.pageX}px`;
-  cardMenu.style.top = `${event.pageY}px`;
+  cardMenu.style.left = `${menuX}px`;
+  cardMenu.style.top = `${menuY}px`;
   cardMenu.style.display = "block";
 
-  // Управление пунктом "Поднять"
-  const isInQueue1 = queue1.contains(card);
-  moveToTopBtn.style.display = isInQueue1 ? "block" : "none";
+  moveToTopBtn.style.display = queue1.contains(card) ? "block" : "none";
 }
 
-// Переместить карточку
 swapQueueBtn.addEventListener("click", () => {
   if (!currentCard) return;
-  if (queue1.contains(currentCard)) {
-    queue2.appendChild(currentCard);
-  } else {
-    queue1.appendChild(currentCard);
-  }
-  hideMenu();
+  const parent = currentCard.parentElement;
+  const targetQueue = parent.id === "queue1" ? queue2 : queue1;
+  targetQueue.appendChild(currentCard);
+  hideMenus();
 });
 
-// Поднять карточку
 moveToTopBtn.addEventListener("click", () => {
-  if (!currentCard) return;
-  if (queue1.contains(currentCard)) {
-    queue1.insertBefore(currentCard, queue1.firstChild);
-  }
-  hideMenu();
+  if (!currentCard || !queue1.contains(currentCard)) return;
+  queue1.insertBefore(currentCard, queue1.children[1]); // после заголовка
+  hideMenus();
 });
 
-function hideMenu() {
+closeShiftBtn.addEventListener("click", () => {
   cardMenu.style.display = "none";
+  confirmDelete.style.left = `${menuX}px`;
+  confirmDelete.style.top = `${menuY}px`;
+  confirmDelete.style.display = "block";
+});
+
+confirmYes.addEventListener("click", () => {
+  if (currentCard) {
+    currentCard.remove();
+  }
+  hideMenus();
+});
+
+confirmNo.addEventListener("click", () => {
+  hideMenus();
+});
+
+function hideMenus() {
+  cardMenu.style.display = "none";
+  confirmDelete.style.display = "none";
   currentCard = null;
 }
 
-// Закрытие меню при клике вне карточки
 document.addEventListener("click", (e) => {
-  if (!cardMenu.contains(e.target) && !e.target.classList.contains("card")) {
-    hideMenu();
+  if (
+    !cardMenu.contains(e.target) &&
+    !confirmDelete.contains(e.target) &&
+    !e.target.classList.contains("card")
+  ) {
+    hideMenus();
   }
 });
-
-function getRandomColor() {
-    // Цвета без зелёного и жёлтого, добавлены мягкие оттенки
-    const availableColors = [
-      "#ff6b6b", // коралловый
-      "#6bc1ff", // небесно-голубой
-      "#ffa26b", // лососевый
-      "#b06bff", // фиолетовый
-  
-      "#8ea6b4", // серо-голубой
-      "#bfa0dc", // сиреневый
-      "#a0c1b8", // светло-бирюзовый
-      "#d3a588", // пудрово-бежевый
-      "#b0bec5", // стальной серый
-      "#a3a3d1"  // нежно-фиолетовый
-    ];
-  
-    // Убираем дубли — карта цвета → его использования
-    if (!getRandomColor.usedColors) getRandomColor.usedColors = new Set();
-  
-    // Если все цвета использованы — сбрасываем
-    if (getRandomColor.usedColors.size >= availableColors.length) {
-      getRandomColor.usedColors.clear();
-    }
-  
-    // Выбираем рандомный неиспользованный цвет
-    let color;
-    do {
-      color = availableColors[Math.floor(Math.random() * availableColors.length)];
-    } while (getRandomColor.usedColors.has(color));
-  
-    getRandomColor.usedColors.add(color);
-    return color;
-  }
-  
